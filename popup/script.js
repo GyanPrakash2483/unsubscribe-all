@@ -14,10 +14,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         url.pathname === "/feed/channels"
     ) {
         other_page_div.style.display = "none"
-        channels_page_div.style.display = "block"
+        channels_page_div.style.display = "flex"
     } else {
         channels_page_div.style.display = "none"
-        other_page_div.style.display = "block"
+        other_page_div.style.display = "flex"
     }
 
     // The content script may not be available yet (for example immediately
@@ -56,7 +56,7 @@ function updateChannelsSection() {
 browser.runtime.onMessage.addListener((message, sender) => {
     if(message.type === "channels-page-ready") {
         other_page_div.style.display = "none";
-        channels_page_div.style.display = "block";
+        channels_page_div.style.display = "flex";
 
         nSubscribedChannels = message.nSubscribedChannels
         updateChannelsSection()

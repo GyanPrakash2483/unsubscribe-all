@@ -1,3 +1,77 @@
 body {
     width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid black;
+    margin: 0;
+    padding: 0;
+}
+
+img {
+    margin: 30px 10px;
+}
+
+.main-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 5px;
+    padding: 5px;
+}
+
+p {
+    font-size: large;
+}
+
+button {
+    margin: 5px;
+    padding: 8px 16px;
+    color: white;
+    border: none;
+    font-size: medium;
+    border-radius: 4px;
+}
+
+#on-other-page > button {
+    background-color: rgb(18, 135, 236);
+}
+
+#on-other-page > button:hover {
+    background-color: rgb(27, 114, 189);
+}
+
+#on-other-page > button:active {
+    background-color: rgb(9, 82, 146);
+}
+
+#on-channels-page > button {
+    background-color: rgb(238, 12, 12);
+}
+
+#on-channels-page > button:hover {
+    background-color: rgb(208, 24, 24);
+}
+
+#on-channels-page > button:active {
+    background-color: rgb(165, 9, 9);
+}
+
+footer {
+    width: 90%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    background-color: rgb(58, 57, 57);
+    padding: 20px;
+    color: white;
+}
+
+footer > a {
+    color: inherit;
 }
