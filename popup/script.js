@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         currentWindow: true
     })
 
-    url = new URL(tab.url)
+    const url = new URL(tab.url)
 
     if(
         url.origin === "https://www.youtube.com" &&
@@ -18,6 +18,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
         channels_page_div.style.display = "none"
         other_page_div.style.display = "block"
+    }
+
+    // The content script may not be available yet (for example immediately
+    // after a navigation or after the extension has been reloaded). Do not
+    // leave an unhandled promise rejection in that case.
+    try {
+        await browser.tabs.sendMessage(tab.id, {
+            type: "check-channel-page-ready"
+        })
+    } catch (error) {
+        if (url.origin === "https://www.youtube.com" &&
+            url.pathname === "/feed/channels") {
+            channels_page_div.querySelector("p").textContent =
+                "YouTube is still loading. Reopen this popup when ready."
+        }
     }
 })
 
@@ -45,5 +60,23 @@ browser.runtime.onMessage.addListener((message, sender) => {
 
         nSubscribedChannels = message.nSubscribedChannels
         updateChannelsSection()
+    }
+})
+
+channels_page_div.addEventListener("click", async (event) => {
+    if (event.target.id !== "unsubscribe-all") return
+
+    const [tab] = await browser.tabs.query({
+        active: true,
+        currentWindow: true
+    })
+
+    try {
+        await browser.tabs.sendMessage(tab.id, {
+            type: "unsubscribe-all"
+        })
+    } catch (error) {
+        channels_page_div.querySelector("p").textContent =
+            "The YouTube page is not ready. Reopen this popup and try again."
     }
 })
