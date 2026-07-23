@@ -49,6 +49,10 @@ checkChannelPageReady()
 
 async function unsubscribeAll() {
     for (const button of unsubscribeButtons) {
+        button.scrollIntoView({
+            block: "center",
+            behaviour: "smooth"
+        })
         button.click();
         await new Promise(resolve => setTimeout(resolve, 200));
 

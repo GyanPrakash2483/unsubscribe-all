@@ -42,6 +42,7 @@ go_channels_page.addEventListener("click", async () => {
     const tab = await browser.tabs.update({
         url: "https://www.youtube.com/feed/channels"
     })
+    go_channels_page.disabled = true;
 })
 
 let nSubscribedChannels = 0;

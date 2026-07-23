@@ -1,3 +1,8 @@
+html {
+    scroll-behavior: smooth;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
 body {
     width: 400px;
     display: flex;
@@ -6,7 +11,7 @@ body {
     justify-content: center;
     border: 4px solid black;
     margin: 0;
-    padding: 0;
+    padding: 4px;
 }
 
 img {
@@ -19,7 +24,6 @@ img {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 5px;
     padding: 5px;
 }
 
@@ -42,10 +46,16 @@ button {
 
 #on-other-page > button:hover {
     background-color: rgb(27, 114, 189);
+    cursor: pointer;
 }
 
 #on-other-page > button:active {
     background-color: rgb(9, 82, 146);
+}
+
+#on-other-page > button:disabled {
+    background-color: rgb(135, 159, 179);
+    cursor: auto;
 }
 
 #on-channels-page > button {
@@ -54,6 +64,7 @@ button {
 
 #on-channels-page > button:hover {
     background-color: rgb(208, 24, 24);
+    cursor: pointer;
 }
 
 #on-channels-page > button:active {
@@ -61,8 +72,8 @@ button {
 }
 
 footer {
-    width: 90%;
     display: flex;
+    width: 360px;
     flex-direction: row;
     align-items: center;
     justify-content: center;
@@ -70,6 +81,7 @@ footer {
     background-color: rgb(58, 57, 57);
     padding: 20px;
     color: white;
+    font-size: small;
 }
 
 footer > a {
