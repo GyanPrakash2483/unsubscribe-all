@@ -48,13 +48,10 @@ go_channels_page.addEventListener("click", async () => {
 let nSubscribedChannels = 0;
 
 function updateChannelsSection() {
-    channels_page_div.innerHTML = `
-        <p>${nSubscribedChannels} Channels subscribed</p>
-        <button id="unsubscribe-all">Unsubscribe all</button>
-    `
-
     const noChannels = nSubscribedChannels === 0
     const unsubscribeButton = document.getElementById("unsubscribe-all")
+
+    channels_page_div.querySelector("p").textContent = `${nSubscribedChannels} Channels subscribed`
     unsubscribeButton.disabled = noChannels
     unsubscribeButton.title = noChannels ? "No channels subscribed" : ""
 }

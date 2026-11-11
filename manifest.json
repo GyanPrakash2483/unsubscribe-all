@@ -1,11 +1,11 @@
 {
     "manifest_version": 3,
     "name": "Youtube Unsubscribe All",
-    "version": "1.0",
+    "version": "1.1",
     "description": "Unsubscribe from all youtube channels with a single click",
 
     "icons": {
-        "1252": "icons/unsubscribe-all.png"
+        "1254": "icons/unsubscribe-all.png"
     },
 
     "homepage_url": "https://github.com/GyanPrakash2483/unsubscribe-all",
