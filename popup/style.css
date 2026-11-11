@@ -71,6 +71,11 @@ button {
     background-color: rgb(165, 9, 9);
 }
 
+#on-channels-page > button:disabled {
+    background-color: rgb(179, 135, 135);
+    cursor: not-allowed;
+}
+
 footer {
     display: flex;
     width: 360px;

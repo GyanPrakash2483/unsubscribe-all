@@ -47,11 +47,15 @@ async function checkChannelPageReady() {
         ...document.querySelectorAll(SUBSCRIBED_BUTTON)
     ];
 
+    notifyPopup({
+        type: "channels-page-ready",
+        nSubscribedChannels: unsubscribeButtons.length
+    })
+}
+
+async function notifyPopup(message) {
     try {
-        await browser.runtime.sendMessage({
-            type: "channels-page-ready",
-            nSubscribedChannels: unsubscribeButtons.length
-        })
+        await browser.runtime.sendMessage(message)
     } catch (error) {
         // No popup is listening.
     }
@@ -60,7 +64,10 @@ async function checkChannelPageReady() {
 checkChannelPageReady()
 
 async function unsubscribeAll() {
-    for (const button of unsubscribeButtons) {
+    // Reopening the popup mid-run replaces unsubscribeButtons, so keep this run's list.
+    const buttons = unsubscribeButtons
+
+    for (const [index, button] of buttons.entries()) {
         button.scrollIntoView({
             block: "center",
             behaviour: "smooth"
@@ -75,6 +82,11 @@ async function unsubscribeAll() {
         }
 
         confirmButton.click();
+
+        notifyPopup({
+            type: "unsubscribe-progress",
+            nSubscribedChannels: buttons.length - index - 1
+        })
 
         // Otherwise the next channel could match this dialog while it is closing.
         await waitFor(() => !findVisibleConfirmButton(), DIALOG_TIMEOUT)

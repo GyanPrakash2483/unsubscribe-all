@@ -52,10 +52,15 @@ function updateChannelsSection() {
         <p>${nSubscribedChannels} Channels subscribed</p>
         <button id="unsubscribe-all">Unsubscribe all</button>
     `
+
+    const noChannels = nSubscribedChannels === 0
+    const unsubscribeButton = document.getElementById("unsubscribe-all")
+    unsubscribeButton.disabled = noChannels
+    unsubscribeButton.title = noChannels ? "No channels subscribed" : ""
 }
 
 browser.runtime.onMessage.addListener((message, sender) => {
-    if(message.type === "channels-page-ready") {
+    if(message.type === "channels-page-ready" || message.type === "unsubscribe-progress") {
         other_page_div.style.display = "none";
         channels_page_div.style.display = "flex";
 
