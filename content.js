@@ -1,38 +1,50 @@
-function waitForText(text) {
-    return new Promise((resolve) => {
-        const find = () => [...document.querySelectorAll('span[role="text"]')]
-            .find(el => el.textContent.trim() === text)
+// Selectors rely on page structure, not text, so they work in every YouTube language.
+// Each row also has a notification button inside the subscribe renderer.
+const SUBSCRIBED_BUTTON = 'ytd-channel-renderer ytd-subscribe-button-renderer[subscribed] button:not(#notification-preference-button *)'
+const CONFIRM_BUTTON = 'yt-confirm-dialog-renderer #confirm-button button'
 
-        const existing = find()
+const PAGE_READY_TIMEOUT = 10000
+const DIALOG_TIMEOUT = 5000
 
-        if(existing) {
-            resolve(existing)
-            return
-        }
-
-        const observer = new MutationObserver(() => {
-            const el = find()
-
-            if(el) {
-                observer.disconnect()
-                resolve(el)
-            }
-        })
-
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        })
-    })
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms))
 }
 
-let unsubscribeButtons
+// Polls rather than observing, because YouTube can show and hide an existing
+// dialog without adding any nodes.
+async function waitFor(check, timeout) {
+    const deadline = Date.now() + timeout
+
+    while(Date.now() < deadline) {
+        const result = check()
+
+        if(result) {
+            return result
+        }
+
+        await delay(100)
+    }
+
+    return null
+}
+
+function findVisibleConfirmButton() {
+    return [...document.querySelectorAll(CONFIRM_BUTTON)]
+        .find(el => el.getClientRects().length > 0)
+}
+
+let unsubscribeButtons = []
 
 async function checkChannelPageReady() {
-    await waitForText("All subscriptions");
+    if(location.pathname !== "/feed/channels") {
+        return
+    }
+
+    // Times out so an account with no subscriptions still reports 0.
+    await waitFor(() => document.querySelector(SUBSCRIBED_BUTTON), PAGE_READY_TIMEOUT)
 
     unsubscribeButtons = [
-        ...document.querySelectorAll('button[aria-label^="Unsubscribe from "]')
+        ...document.querySelectorAll(SUBSCRIBED_BUTTON)
     ];
 
     try {
@@ -54,12 +66,19 @@ async function unsubscribeAll() {
             behaviour: "smooth"
         })
         button.click();
-        await new Promise(resolve => setTimeout(resolve, 200));
 
-        const confirmButton = document.querySelector('button[aria-label="Unsubscribe"]')
+        const confirmButton = await waitFor(findVisibleConfirmButton, DIALOG_TIMEOUT)
+
+        // Something is wrong with the page, so stop instead of clicking on blindly.
+        if(!confirmButton) {
+            return
+        }
+
         confirmButton.click();
 
-        await new Promise(resolve => setTimeout(resolve, 500));
+        // Otherwise the next channel could match this dialog while it is closing.
+        await waitFor(() => !findVisibleConfirmButton(), DIALOG_TIMEOUT)
+        await delay(500)
     }
 }
 
